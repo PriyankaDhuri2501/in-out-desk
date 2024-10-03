@@ -1,0 +1,111 @@
+.external-inward-log {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    max-width: 800px;
+    margin: auto;
+  }
+  
+  h2 {
+    text-align: center;
+    color: #333;
+  }
+  
+  .search-section, 
+  .pdf-handling-section, 
+  .delete-export-section, 
+  .update-all-section, 
+  .back-to-main-section {
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 5px;
+    
+  }
+  
+  .search-section label, 
+  .pdf-handling-section label, 
+  .delete-export-section label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .search-section input[type="text"], 
+  .pdf-handling-section input[type="text"], 
+  .delete-export-section input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .radio-buttons label, 
+  .checkboxes label {
+    margin-right: 10px;
+    display: inline-block;
+  }
+  
+  .radio-buttons input[type="radio"], 
+  .checkboxes input[type="checkbox"] {
+    margin-right: 5px;
+  }
+  
+  button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  
+  button + button {
+    margin-left: 15px;
+  }
+  
+  .refresh-button {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .download-button, .update-button {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .delete-button {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .export-button {
+    background-color: #ffc107;
+    color: black;
+  }
+  
+  .update-all-button {
+    background-color: #6f42c1;
+    color: white;
+  }
+  
+  .back-to-main-button {
+    background-color: #343a40;
+    color: white;
+    display: block;
+    margin: auto;
+    margin-top: 10px;
+  }
+  
+  button:hover {
+    opacity: 0.9;
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 10px; /* Adds space between buttons */
+  }
+  
+  .button-group button {
+    flex: 1;
+  }
+  
