@@ -1,14 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const multer = require('multer'); // Import multer for file uploads
-const path = require('path'); // Import path for handling file paths
+const multer = require('multer');
+const path = require('path');
 
 const app = express();
 app.use(express.json());
-app.use(cors()); // Allow frontend requests to the backend
+app.use(cors()); // Enable CORS for frontend-backend communication
 
-// Mongoose Schema for Inward Uploads
+// Mongoose schema and model for inward data
 const inwardSchema = new mongoose.Schema({
     letterDate: String,
     receivedDate: String,
@@ -17,28 +17,28 @@ const inwardSchema = new mongoose.Schema({
     to: String,
     address: String,
     briefDescription: String,
+    language: String,
     numberOfPages: Number,
     pdfPath: String,
-    remark: String
+    remark: String,
+    inwardType: String // Field to distinguish Internal or External
 });
 
-// MongoDB Model
 const Inward = mongoose.model('Inward', inwardSchema);
 
-// Set up storage for multer
+// Setup storage for file uploads using multer
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads'); // Path to the uploads directory
+        cb(null, 'uploads/');
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname); // Create a unique filename
-    },
+        cb(null, Date.now() + '-' + file.originalname); // Generate a unique filename
+    }
 });
-
 const upload = multer({ storage: storage });
 
-// POST Route to upload data
-app.post('/api/inwards', upload.single('pdfPath'), async (req, res) => {
+// API route for inward file upload (POST)
+app.post('/api/internal/inward', upload.single('pdfPath'), async (req, res) => {
     try {
         const inwardData = {
             letterDate: req.body.letterDate,
@@ -47,44 +47,52 @@ app.post('/api/inwards', upload.single('pdfPath'), async (req, res) => {
             from: req.body.from,
             to: req.body.to,
             address: req.body.address,
-            briefDescription: req.body.briefDescription,
-            numberOfPages: req.body.numberOfPages,
-            pdfPath: req.file.path, // Store the file path
-            remark: req.body.remark
+            briefDescription: req.body.description,
+            language: req.body.language,
+            numberOfPages: req.body.pages,
+            pdfPath: req.file.path,
+            remark: req.body.remark,
+            inwardType: req.body.inwardType // Expecting Internal or External from the frontend
         };
-        
+
+        // Save the inward data to MongoDB
         const inward = new Inward(inwardData);
         await inward.save();
+
         res.status(201).json({ message: 'Inward data uploaded successfully!' });
     } catch (error) {
-        res.status(500).json({ error: 'Failed to upload inward data' });
+        res.status(500).json({ message: 'Error uploading inward data', error });
     }
 });
 
-// GET Route to fetch all uploaded inward data
-app.get('/api/inwards', async (req, res) => {
+// API route to get all inward uploads (GET)
+app.get('/api/internal/inward', async (req, res) => {
     try {
-        const inwards = await Inward.find();
-        res.json(inwards);
+        const { inwardType } = req.query; // Get the inwardType from query parameters (Internal/External)
+        
+        // If inwardType is provided, filter by that, otherwise fetch all
+        const filter = inwardType ? { inwardType } : {};
+        
+        const inwardUploads = await Inward.find(filter);
+        res.status(200).json(inwardUploads);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch inward data' });
+        res.status(500).json({ message: 'Error fetching inward uploads', error });
     }
 });
 
-// MongoDB connection
+// Connect to MongoDB
 mongoose.connect('mongodb://localhost:27017/inwardUploads', { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('MongoDB connection failed:', err));
 
-// Create the uploads directory if it doesn't exist
+// Create uploads directory if it doesn't exist
 const fs = require('fs');
 const uploadsDir = path.join(__dirname, 'uploads');
-
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir);
 }
 
-// Start the server
+// Start server on port 5000
 app.listen(5000, () => {
     console.log('Server running on port 5000');
 });

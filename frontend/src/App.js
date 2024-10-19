@@ -3,7 +3,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './Login';
 import Main from './Main';
-import InwardUpload from './InwardUpload';  // Import the InwardUpload component
+import InwardUpload from './internal';  // Import the InwardUpload component
 import OutwardUpload from './OutwardUpload';
 import InternalInwardLog from './InternalInwardLog';
 import ExternalInwardLog from './ExternalInwardLog';
